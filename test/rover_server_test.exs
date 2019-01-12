@@ -41,4 +41,9 @@ defmodule RoverServerTest do
     position = RoverServer.rotate_to({:right, :west})
     assert :north == position
   end
+
+  test "Given the Is as position 1,1 and the rover is facing North, when the rover moves forward, the rover is in position 0,1" do
+    current_position = RoverServer.move_to({:north, [1, 1]})
+    assert [0, 1] == current_position
+  end
 end
