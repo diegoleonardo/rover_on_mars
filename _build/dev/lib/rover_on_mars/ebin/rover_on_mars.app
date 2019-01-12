@@ -1,0 +1,7 @@
+{application,rover_on_mars,
+             [{applications,[kernel,stdlib,elixir,logger]},
+              {description,"rover_on_mars"},
+              {modules,['Elixir.RoverOnMars',
+                        'Elixir.RoverOnMars.RoverServer']},
+              {registered,[]},
+              {vsn,"0.1.0"}]}.
