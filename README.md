@@ -1,16 +1,25 @@
 # RoverOnMars
 
-A simple test to solve:
+A simple test to solve.
 
 ## Test
+
 A rover has been developed to map out the landscape of mars.
 The rover is a robot which can move on a 5 x 5 grid controlled by simple
 commands. Write a program which controls the movement of the Mars rover.
 
-## COMMANDS
+## Commands
+
 - Rotate to left: L
 - Rotate to right: R
 - Forward: F
+
+## Current rover position should be output in the screen:
+
+0,0 | 0,1 | 0,2 | 0,3 
+1,0 | 1,1 | 1,2 | 1,3 
+2,0 | 2,1 | 2,2 | 2,3 
+3,0 | 3,1 | 3,2 | 3,3 
 
 ## Installation
 

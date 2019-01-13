@@ -53,8 +53,23 @@ defmodule RoverServerTest do
     end
 
     test "Given the Rover is facing West and is at position(0,0), when the user tries to move forward, the rovers position does not change" do
+      current_position = RoverServer.move_to({:west, [0, 0]})
+      assert [0, 0] = current_position
+    end
+
+    test "Given the Rover is facing North and is at position(0,0), when the user tries to move forward, the rovers position does not change" do
       current_position = RoverServer.move_to({:north, [0, 0]})
       assert [0, 0] = current_position
+    end
+
+    test "Given the Rover is facing South and is at position(3,0), when the user tries to move forward, the rovers position does not change" do
+      current_position = RoverServer.move_to({:south, [3, 0]})
+      assert [3, 0] = current_position
+    end
+
+    test "Given the Rover is facing East and is at position(0,3), when the user tries to move forward, the rovers position does not change" do
+      current_position = RoverServer.move_to({:east, [0, 3]})
+      assert [0, 3] = current_position
     end
   end
 end

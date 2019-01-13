@@ -1,6 +1,6 @@
 TECH TEST:
 A rover has been developed to map out the landscape of mars.
-The rover is a robot which can move on a 5 x 5 grid controlled by simple
+The rover is a robot which can move on a 4 x 4 grid controlled by simple
 commands. Write a program which controls the movement of the Mars rover.
 
 COMMANDS:
