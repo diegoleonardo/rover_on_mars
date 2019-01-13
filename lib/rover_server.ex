@@ -2,10 +2,17 @@ defmodule RoverOnMars.RoverServer do
   @doc """
   Function used to rotate the rover 
 
+  Possible rotations: :left, :right
+
+  Possible directions to facing: :north, :south, :east, :west
+
   ## Examples
 
       iex> RoverOnMars.RoverServer.rotate_to({:left, :north})
       :west
+
+      iex> RoverOnMars.RoverServer.rotate_to({:right, :north})
+      :east
 
   """
   def rotate_to({direction, position}) do
@@ -20,28 +27,30 @@ defmodule RoverOnMars.RoverServer do
       iex> RoverOnMars.RoverServer.move_to({:north, [1,1]})
       [0,1]
 
+      iex> RoverOnMars.RoverServer.move_to({:north, [0,0]})
+      [0,0]
+
   """
-  def move_to({direction, current_position}) do
+  def move_to({direction, [vertical, horizontal] = current_position}) do
     case direction do
-      :north ->
-        [vertical, horizontal] = current_position
+      :north when vertical > 0 ->
         new_vertical = vertical - 1
         [new_vertical, horizontal]
 
-      :south ->
-        [vertical, horizontal] = current_position
+      :south when vertical < 3 ->
         new_vertical = vertical + 1
         [new_vertical, horizontal]
 
-      :east ->
-        [vertical, horizontal] = current_position
+      :east when horizontal < 3 ->
         new_horizontal = horizontal + 1
         [vertical, new_horizontal]
 
-      :west ->
-        [vertical, horizontal] = current_position
+      :west when horizontal > 0 ->
         new_horizontal = horizontal - 1
         [vertical, new_horizontal]
+
+      __ ->
+        current_position
     end
   end
 
