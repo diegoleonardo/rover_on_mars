@@ -5,7 +5,7 @@ A simple test to solve.
 ## Test
 
 A rover has been developed to map out the landscape of mars.
-The rover is a robot which can move on a 5 x 5 grid controlled by simple
+The rover is a robot which can move on a 4 x 4 grid controlled by simple
 commands. Write a program which controls the movement of the Mars rover.
 
 ## Commands
@@ -16,10 +16,10 @@ commands. Write a program which controls the movement of the Mars rover.
 
 ## Current rover position should be output in the screen:
 
-0,0 | 0,1 | 0,2 | 0,3 
-1,0 | 1,1 | 1,2 | 1,3 
-2,0 | 2,1 | 2,2 | 2,3 
-3,0 | 3,1 | 3,2 | 3,3 
+0,0 | 0,1 | 0,2 | 0,3__
+1,0 | 1,1 | 1,2 | 1,3__
+2,0 | 2,1 | 2,2 | 2,3__
+3,0 | 3,1 | 3,2 | 3,3__
 
 ## Installation
 
