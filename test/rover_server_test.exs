@@ -48,28 +48,43 @@ defmodule RoverServerTest do
 
   describe "When move forward" do
     test "Given the Is as position 1,1 and the rover is facing North, when the rover moves forward, the rover is in position 0,1" do
-      current_position = RoverServer.move_to({:north, [1, 1]})
-      assert [0, 1] == current_position
+      init_state = [0, 1]
+      {:ok, pid} = RoverServer.start_link(init_state)
+      current_position = RoverServer.move_to(:north)
+      Process.exit(pid, :kill)
+      assert init_state == current_position
     end
 
     test "Given the Rover is facing West and is at position(0,0), when the user tries to move forward, the rovers position does not change" do
-      current_position = RoverServer.move_to({:west, [0, 0]})
-      assert [0, 0] = current_position
+      init_state = [0, 0]
+      {:ok, pid} = RoverServer.start_link(init_state)
+      current_position = RoverServer.move_to(:west)
+      Process.exit(pid, :kill)
+      assert init_state = current_position
     end
 
     test "Given the Rover is facing North and is at position(0,0), when the user tries to move forward, the rovers position does not change" do
-      current_position = RoverServer.move_to({:north, [0, 0]})
-      assert [0, 0] = current_position
+      init_state = [0, 0]
+      {:ok, pid} = RoverServer.start_link(init_state)
+      current_position = RoverServer.move_to(:north)
+      Process.exit(pid, :kill)
+      assert init_state = current_position
     end
 
     test "Given the Rover is facing South and is at position(3,0), when the user tries to move forward, the rovers position does not change" do
-      current_position = RoverServer.move_to({:south, [3, 0]})
-      assert [3, 0] = current_position
+      init_state = [3, 0]
+      {:ok, pid} = RoverServer.start_link(init_state)
+      current_position = RoverServer.move_to(:south)
+      Process.exit(pid, :kill)
+      assert init_state = current_position
     end
 
     test "Given the Rover is facing East and is at position(0,3), when the user tries to move forward, the rovers position does not change" do
-      current_position = RoverServer.move_to({:east, [0, 3]})
-      assert [0, 3] = current_position
+      init_state = [0, 3]
+      {:ok, pid} = RoverServer.start_link(init_state)
+      current_position = RoverServer.move_to(:east)
+      Process.exit(pid, :kill)
+      assert init_state = current_position
     end
   end
 end
