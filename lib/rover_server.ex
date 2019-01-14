@@ -1,76 +1,84 @@
 defmodule RoverOnMars.RoverServer do
   use GenServer
+  alias RoverOnMars.RoverState
 
   @name :rover_server
   @min_value_to_north_and_west 0
   @max_value_to_south_and_east 3
   def start_link(init_state) do
-    GenServer.start_link(__MODULE__, init_state, name: @name)
+    GenServer.start_link(__MODULE__, %RoverState{current_position: init_state}, name: @name)
   end
 
   def init(state) do
     {:ok, state}
   end
 
-  def handle_call(:north, _from, [vertical, horizontal] = state) do
-    new_state =
+  def handle_call(:north, _from, state) do
+    [vertical, horizontal] = state.current_position
+
+    position =
       case vertical do
         @min_value_to_north_and_west ->
-          state
+          state.current_position
 
         _ ->
           new_vertical = vertical - 1
           [new_vertical, horizontal]
       end
 
-    {:reply, new_state, new_state}
+    new_state = %{state | current_position: position}
+    {:reply, position, new_state}
   end
 
-  def handle_call(:south, _from, [vertical, horizontal] = state) do
-    new_state =
+  def handle_call(:south, _from, state) do
+    [vertical, horizontal] = state.current_position
+
+    position =
       case vertical do
         @max_value_to_south_and_east ->
-          state
+          state.current_position
 
         _ ->
           new_vertical = vertical + 1
           [new_vertical, horizontal]
       end
 
-    {:reply, new_state, new_state}
+    new_state = %{state | current_position: position}
+    {:reply, position, new_state}
   end
 
-  def handle_call(:east, _from, [vertical, horizontal] = state) do
-    new_state =
+  def handle_call(:east, _from, state) do
+    [vertical, horizontal] = state.current_position
+
+    position =
       case horizontal do
         @max_value_to_south_and_east ->
-          state
+          state.current_position
 
         _ ->
           new_horizontal = horizontal + 1
           [vertical, new_horizontal]
       end
 
-    {:reply, new_state, new_state}
+    new_state = %{state | current_position: position}
+    {:reply, position, new_state}
   end
 
-  def handle_call(:west, _from, [vertical, horizontal] = state) do
-    new_state =
+  def handle_call(:west, _from, state) do
+    [vertical, horizontal] = state.current_position
+
+    position =
       case horizontal do
         @min_value_to_north_and_west ->
-          state
+          state.current_position
 
         _ ->
           new_horizontal = horizontal - 1
           [vertical, new_horizontal]
       end
 
-    {:reply, new_state, new_state}
-  end
-
-  def handl_call(_, _from, state) do
-    IO.puts("entou em hand_call padrao")
-    {:reply, state, state}
+    new_state = %{state | current_position: position}
+    {:reply, position, new_state}
   end
 
   def handle_info(:work, state) do
