@@ -5,8 +5,12 @@ defmodule RoverOnMars.RoverServer do
   @name :rover_server
   @min_value_to_north_and_west 0
   @max_value_to_south_and_east 3
-  def start_link(init_state) do
-    GenServer.start_link(__MODULE__, %RoverState{current_position: init_state}, name: @name)
+  def start_link(init_direction, init_position) do
+    GenServer.start_link(
+      __MODULE__,
+      %RoverState{current_facing: init_direction, current_position: init_position},
+      name: @name
+    )
   end
 
   def init(state) do
@@ -81,6 +85,12 @@ defmodule RoverOnMars.RoverServer do
     {:reply, position, new_state}
   end
 
+  def handle_call(direction, _from, state) do
+    new_direction_facing = switch({direction, state.current_facing})
+    new_state = %{state | current_facing: new_direction_facing}
+    {:reply, new_direction_facing, new_state}
+  end
+
   def handle_info(:work, state) do
     {:noreply, state}
   end
@@ -94,15 +104,17 @@ defmodule RoverOnMars.RoverServer do
 
   ## Examples
 
-      iex> RoverOnMars.RoverServer.rotate_to({:left, :north})
+      iex> RoverOnMars.RoverServer.start_link(:north, [1,1])
+      iex> RoverOnMars.RoverServer.rotate_to(:left)
       :west
 
-      iex> RoverOnMars.RoverServer.rotate_to({:right, :north})
+      iex> RoverOnMars.RoverServer.start_link(:north, [1,1])
+      iex> RoverOnMars.RoverServer.rotate_to(:right)
       :east
 
   """
-  def rotate_to({direction, position}) do
-    switch({direction, position})
+  def rotate_to(direction) do
+    GenServer.call(@name, direction)
   end
 
   @doc """
@@ -110,11 +122,11 @@ defmodule RoverOnMars.RoverServer do
 
   ## Examples
 
-      iex> RoverOnMars.RoverServer.start_link([1,1])
+      iex> RoverOnMars.RoverServer.start_link(:north, [1,1])
       iex> RoverOnMars.RoverServer.move_to(:north)
       [0,1]
       
-      iex> RoverOnMars.RoverServer.start_link([0,0])
+      iex> RoverOnMars.RoverServer.start_link(:north, [0,0])
       iex> RoverOnMars.RoverServer.move_to(:north)
       [0,0]
 
