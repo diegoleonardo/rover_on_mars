@@ -1,22 +1,9 @@
 defmodule RoverOnMars do
-  @moduledoc """
-  Documentation for RoverOnMars.
-  """
+  use Application
+  alias RoverOnMars.RoverInterface
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> RoverOnMars.hello()
-      :world
-
-  """
-  def hello do
-    :world
-    # input = IO.gets("What's your name?")
-    # IO.puts("Respondeu")
-    # IO.puts("Value input: #{input}")
-    # hello()
+  def start(_type, _args) do
+    RoverInterface.start(:north, [0, 0])
+    {:ok, self()}
   end
 end

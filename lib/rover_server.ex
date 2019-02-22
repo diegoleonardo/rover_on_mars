@@ -3,97 +3,8 @@ defmodule RoverOnMars.RoverServer do
   alias RoverOnMars.RoverState
 
   @name :rover_server
-  @min_value_to_north_and_west 0
-  @max_value_to_south_and_east 3
-  def start_link(init_direction, init_position) do
-    GenServer.start_link(
-      __MODULE__,
-      %RoverState{current_facing: init_direction, current_position: init_position},
-      name: @name
-    )
-  end
-
-  def init(state) do
-    {:ok, state}
-  end
-
-  def handle_call(:north, _from, state) do
-    [vertical, horizontal] = state.current_position
-
-    position =
-      case vertical do
-        @min_value_to_north_and_west ->
-          state.current_position
-
-        _ ->
-          new_vertical = vertical - 1
-          [new_vertical, horizontal]
-      end
-
-    new_state = %{state | current_position: position}
-    {:reply, position, new_state}
-  end
-
-  def handle_call(:south, _from, state) do
-    [vertical, horizontal] = state.current_position
-
-    position =
-      case vertical do
-        @max_value_to_south_and_east ->
-          state.current_position
-
-        _ ->
-          new_vertical = vertical + 1
-          [new_vertical, horizontal]
-      end
-
-    new_state = %{state | current_position: position}
-    {:reply, position, new_state}
-  end
-
-  def handle_call(:east, _from, state) do
-    [vertical, horizontal] = state.current_position
-
-    position =
-      case horizontal do
-        @max_value_to_south_and_east ->
-          state.current_position
-
-        _ ->
-          new_horizontal = horizontal + 1
-          [vertical, new_horizontal]
-      end
-
-    new_state = %{state | current_position: position}
-    {:reply, position, new_state}
-  end
-
-  def handle_call(:west, _from, state) do
-    [vertical, horizontal] = state.current_position
-
-    position =
-      case horizontal do
-        @min_value_to_north_and_west ->
-          state.current_position
-
-        _ ->
-          new_horizontal = horizontal - 1
-          [vertical, new_horizontal]
-      end
-
-    new_state = %{state | current_position: position}
-    {:reply, position, new_state}
-  end
-
-  def handle_call(direction, _from, state) do
-    new_direction_facing = switch({direction, state.current_facing})
-    new_state = %{state | current_facing: new_direction_facing}
-    {:reply, new_direction_facing, new_state}
-  end
-
-  def handle_info(:work, state) do
-    {:noreply, state}
-  end
+  @limit_value_to_north_and_west 0
+  @limit_valie_to_south_and_east 3
 
   @doc """
   Function used to rotate the rover 
@@ -123,19 +34,56 @@ defmodule RoverOnMars.RoverServer do
   ## Examples
 
       iex> RoverOnMars.RoverServer.start_link(:north, [1,1])
-      iex> RoverOnMars.RoverServer.move_to(:north)
+      iex> RoverOnMars.RoverServer.move()
       [0,1]
       
       iex> RoverOnMars.RoverServer.start_link(:north, [0,0])
-      iex> RoverOnMars.RoverServer.move_to(:north)
+      iex> RoverOnMars.RoverServer.move()
       [0,0]
 
   """
-  def move_to(direction) do
-    GenServer.call(@name, direction)
+  def move() do
+    GenServer.call(@name, :move)
   end
 
-  defp switch({direction, position}) when direction == :left do
+  def get_state() do
+    GenServer.call(@name, :get_state)
+  end
+
+  def start_link(init_direction, init_position) do
+    GenServer.start_link(
+      __MODULE__,
+      %RoverState{current_facing: init_direction, current_position: init_position},
+      name: @name
+    )
+  end
+
+  def init(state) do
+    {:ok, state}
+  end
+
+  def handle_call(:get_state, _from, state) do
+    {:reply, {state.current_facing, state.current_position}, state}
+  end
+
+  def handle_call(:move, _from, state) do
+    position = move(state.current_facing, state.current_position)
+
+    new_state = %{state | current_position: position}
+    {:reply, position, new_state}
+  end
+
+  def handle_call(direction, _from, state) do
+    new_direction_facing = switch({direction, state.current_facing})
+    new_state = %{state | current_facing: new_direction_facing}
+    {:reply, new_direction_facing, new_state}
+  end
+
+  def handle_info(:work, state) do
+    {:noreply, state}
+  end
+
+  defp switch({:left, position}) do
     case position do
       :north -> :west
       :west -> :south
@@ -144,12 +92,56 @@ defmodule RoverOnMars.RoverServer do
     end
   end
 
-  defp switch({direction, position}) when direction == :right do
+  defp switch({:right, position}) do
     case position do
       :north -> :east
       :east -> :south
       :south -> :west
       :west -> :north
+    end
+  end
+
+  defp move(:north, [vertical, horizontal]) do
+    case vertical do
+      @limit_value_to_north_and_west ->
+        [vertical, horizontal]
+
+      _ ->
+        new_vertical = vertical - 1
+        [new_vertical, horizontal]
+    end
+  end
+
+  defp move(:south, [vertical, horizontal]) do
+    case vertical do
+      @limit_valie_to_south_and_east ->
+        [vertical, horizontal]
+
+      _ ->
+        new_vertical = vertical + 1
+        [new_vertical, horizontal]
+    end
+  end
+
+  defp move(:east, [vertical, horizontal]) do
+    case horizontal do
+      @limit_valie_to_south_and_east ->
+        [vertical, horizontal]
+
+      _ ->
+        new_horizontal = horizontal + 1
+        [vertical, new_horizontal]
+    end
+  end
+
+  defp move(:west, [vertical, horizontal]) do
+    case horizontal do
+      @limit_value_to_north_and_west ->
+        [vertical, horizontal]
+
+      _ ->
+        new_horizontal = horizontal - 1
+        [vertical, new_horizontal]
     end
   end
 end
